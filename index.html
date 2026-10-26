@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#FFF8F0" />
+<!-- 别让搜索引擎收录（放到公网上时更安心；对扫码毫无影响） -->
+<meta name="robots" content="noindex, nofollow" />
+<title>小宝，生日快乐 · 我们的纪念册</title>
+
+<!--
+  ================================================================
+  给王涵韵的生日纪念网页
+  ----------------------------------------------------------------
+  ★ 怎么用（三步）
+    1) 把 1.jpg ~ 9.jpg 放进 images 文件夹        → 照片墙
+    2) 把 t1.jpg ~ t4.jpg 放进 images 文件夹      → 恋爱时间轴
+       把 poster.jpg 放进 images 文件夹           → 视频封面
+    3) 把 1.mp4 放进 videos 文件夹                → 视频区
+  ★ 改文字：全文搜索「【改文字】」，每一处都写着能改成什么
+  ★ 打开方式：直接双击本文件；手机上发给微信/QQ，用浏览器打开
+  ================================================================
+-->
+
+<style>
+  /* ===================== 基础变量 & 全局 ===================== */
+  :root {
+    --cream:      #FFF8F0;   /* 奶油白（主色） */
+    --peach:      #FFB5A7;   /* 粉橘（点缀） */
+    --peach-deep: #FF9C8B;
+    --ink:        #4A4A4A;   /* 正文深灰 */
+    --ink-soft:   #8A8078;
+    --shadow:     0 10px 30px rgba(255, 150, 130, .16);
+    --radius:     16px;
+    --serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", Georgia, "Times New Roman", "SimSun", serif;
+    --hand:  "Ma Shan Zheng", "Xingkai SC", "Kaiti SC", "STKaiti", "KaiTi", "楷体", "华文楷体", cursive;
+    --sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* 封面/大图弹窗打开时锁住滚动（由 JS 切换） */
+  body.locked { overflow: hidden; }
+
+  img { display: block; max-width: 100%; border: 0; }
+  figure { margin: 0; }
+  button { font-family: inherit; }
+
+  .wrap { width: 100%; max-width: 720px; margin: 0 auto; }
+  .section { padding: 76px 22px; }
+
+  .sec-title {
+    font-family: var(--serif);
+    font-size: clamp(22px, 5.6vw, 28px);
+    letter-spacing: 3px;
+    text-align: center;
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .sec-sub {
+    text-align: center;
+    font-size: 12.5px;
+    letter-spacing: 2px;
+    color: #B0A099;
+    margin: 0 0 34px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 181, 167, .26);
+    padding: 34px 28px;
+  }
+
+  /* ===================== 按钮 ===================== */
+  .btn {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-block;
+    border: 0;
+    cursor: pointer;
+    color: #fff;
+    font-size: 16.5px;
+    letter-spacing: 1.5px;
+    padding: 15px 34px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #FFC7B9, #FF9C8B);
+    box-shadow: 0 12px 26px rgba(255, 156, 139, .42);
+    transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:hover { filter: brightness(1.03); transform: translateY(-2px); }
+  .btn:active { transform: scale(.96); box-shadow: 0 6px 14px rgba(255, 156, 139, .38); }
+
+  /* ===================== ① 封面页 ===================== */
+  #cover {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px 24px;
+    background: linear-gradient(150deg, #FFF7F1 0%, #FFE6DB 46%, #FFD9DE 100%);
+    transition: opacity 1s ease, visibility 1s ease;
+  }
+
+  /* 封面中间那团柔光 */
+  #cover::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 74vw;
+    max-width: 520px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .85), rgba(255, 255, 255, 0) 68%);
+    pointer-events: none;
+  }
+
+  #cover.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .cover-inner { position: relative; z-index: 1; }
+
+  .cover-heart {
+    font-size: 26px;
+    color: #FF9C8B;
+    animation: beat 1.9s ease-in-out infinite;
+    margin-bottom: 6px;
+  }
+
+  .cover-title {
+    font-family: var(--serif);
+    font-size: clamp(27px, 7.6vw, 42px);
+    line-height: 1.6;
+    letter-spacing: 3px;
+    margin: 0 0 14px;
+    color: #5C4A46;
+  }
+
+  .cover-sub {
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: #B9918A;
+    margin: 0 0 42px;
+  }
+
+  #coverBtn { animation: breathe 2.6s ease-in-out infinite; }
+
+  .cover-tip {
+    margin: 20px 0 0;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #C3A39B;
+  }
+
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    12%      { transform: scale(1.22); }
+    24%      { transform: scale(1); }
+    36%      { transform: scale(1.14); }
+    48%      { transform: scale(1); }
+  }
+
+  @keyframes breathe {
+    0%, 100% { box-shadow: 0 12px 26px rgba(255, 156, 139, .42); }
+    50%      { box-shadow: 0 16px 40px rgba(255, 156, 139, .72); }
+  }
+
+  /* ===================== ② 主页开场 ===================== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 90px 24px 100px;
+    background: linear-gradient(180deg, #FFDCC6 0%, #FFEDE2 46%, var(--cream) 100%);
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 620px;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  /* 点开封面之后，开场文字缓缓浮出 */
+  #main.entered .hero-inner {
+    animation: riseIn 1.1s cubic-bezier(.2, .7, .3, 1) .15s both;
+  }
+
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-size: 11.5px;
+    letter-spacing: 5px;
+    color: #BE9186;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(25px, 7vw, 40px);
+    line-height: 1.65;
+    letter-spacing: 2px;
+    margin: 0 0 20px;
+    color: #514442;
+    font-weight: 600;
+  }
+
+  .hero-line {
+    width: 46px;
+    height: 1.5px;
+    margin: 0 auto 20px;
+    background: linear-gradient(90deg, rgba(255, 181, 167, 0), var(--peach), rgba(255, 181, 167, 0));
+  }
+
+  .hero-note {
+    font-size: 14px;
+    color: #8B7C77;
+    letter-spacing: 1px;
+    margin: 0;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    left: 0; right: 0; bottom: 30px;
+    z-index: 2;
+    text-align: center;
+    font-size: 11.5px;
+    letter-spacing: 3px;
+    color: #B99189;
+    animation: floatHint 2.4s ease-in-out infinite;
+  }
+  @keyframes floatHint {
+    0%, 100% { transform: translateY(0); opacity: .75; }
+    50%      { transform: translateY(7px); opacity: 1; }
+  }
+
+  /* ---- 纯 CSS 飘落花瓣 / 爱心（别太密集：一共 14 个） ---- */
+  .petals {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .petal {
+    position: absolute;
+    top: -14vh;
+    left: var(--x, 10%);
+    width: var(--size, 12px);
+    height: var(--size, 12px);
+    background: linear-gradient(135deg, #FFCDBE, #FF9C8B);
+    border-radius: 62% 38% 55% 45% / 55% 62% 38% 45%;
+    opacity: 0;
+    animation: petalFall var(--dur, 16s) linear var(--delay, 0s) infinite;
+    will-change: transform, opacity;
+  }
+
+  /* 爱心用文字做，简单又不容易变形 */
+  .petal.glyph {
+    width: auto;
+    height: auto;
+    background: none;
+    border-radius: 0;
+    font-size: var(--size, 14px);
+    line-height: 1;
+    color: rgba(255, 140, 128, .78);
+  }
+
+  @keyframes petalFall {
+    0%   { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+    8%   { opacity: .95; }
+    88%  { opacity: .9; }
+    100% { transform: translate3d(var(--drift, 40px), 112vh, 0) rotate(var(--spin, 320deg)); opacity: 0; }
+  }
+
+  /* ===================== ③ 告白文案卡片 ===================== */
+  .letter-card {
+    background:
+      linear-gradient(#fff, #fff) padding-box,
+      linear-gradient(140deg, rgba(255, 181, 167, .5), rgba(255, 226, 214, .3)) border-box;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 38px 28px 30px;
+    position: relative;
+  }
+
+  /* 卡片左上角的小装饰 */
+  .letter-card::before {
+    content: "❀";
+    position: absolute;
+    top: 8px; left: 14px;
+    font-size: 15px;
+    color: rgba(255, 158, 140, .55);
+  }
+
+  .letter {
+    font-family: var(--hand);
+    font-size: clamp(17px, 4.7vw, 21px);
+    line-height: 2.15;
+    letter-spacing: .6px;
+    color: #514B49;
+  }
+  .letter p { margin: 0 0 .55em; }
+  .letter p:last-of-type { margin-bottom: 0; }
+  .letter .em { color: #E8897A; }
+
+  .letter-sign {
+    margin-top: 22px;
+    text-align: right;
+    font-family: var(--hand);
+    font-size: 17px;
+    color: #B08D86;
+    letter-spacing: 1px;
+  }
+
+  /* ===================== ④ 恋爱时间轴 ===================== */
+  .timeline {
+    position: relative;
+    padding-left: 34px;
+  }
+
+  /* 左侧那条竖线 */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 11px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg,
+      rgba(255, 181, 167, .12),
+      rgba(255, 181, 167, .85) 22%,
+      rgba(255, 181, 167, .85) 78%,
+      rgba(255, 181, 167, .12));
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 42px;
+  }
+  .tl-item:last-child { margin-bottom: 0; }
+
+  /* 节点圆点 */
+  .tl-dot {
+    position: absolute;
+    left: -34px;
+    top: 20px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 3px solid var(--peach);
+    box-shadow: 0 0 0 6px rgba(255, 181, 167, .14);
+  }
+
+  .tl-card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 181, 167, .24);
+    padding: 22px 22px 20px;
+  }
+
+  .tl-date {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #C08579;
+    background: rgba(255, 181, 167, .16);
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin-bottom: 10px;
+  }
+
+  .tl-title {
+    font-family: var(--serif);
+    font-size: 19px;
+    letter-spacing: 1.5px;
+    margin: 0 0 6px;
+    color: #4F4442;
+    font-weight: 600;
+  }
+
+  .tl-text {
+    font-size: 14px;
+    color: #857A76;
+    margin: 0;
+    letter-spacing: .5px;
+  }
+
+  /* ---- 照片占位框（图片加载失败时自动露出中间提示） ---- */
+  .ph {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #FFE7DC 0%, #FFF2E8 52%, #FFE3E7 100%);
+    aspect-ratio: 4 / 3;
+  }
+
+  .ph-hint {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 12px;
+    font-size: 12.5px;
+    letter-spacing: 1.5px;
+    color: #C4968A;
+  }
+
+  .ph img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .tl-card .ph { margin-top: 14px; }
+
+  /* ===================== ⑤ 照片墙 ===================== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .shot {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .3s ease;
+  }
+  .shot:active { transform: scale(.97); }
+  .shot .ph { aspect-ratio: 1 / 1; border-radius: 12px; }
+
+  .shot figcaption {
+    margin-top: 8px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    text-align: center;
+    color: #97887F;
+    letter-spacing: .3px;
+    /* 文字太长时最多两行 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ===================== ⑥ 视频区 ===================== */
+  .video-card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 181, 167, .24);
+    padding: 14px;
+  }
+
+  .video-card video {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+    background: #F6EDE7;
+  }
+
+  .video-note {
+    text-align: center;
+    font-size: 12.5px;
+    color: #B0A099;
+    letter-spacing: 1px;
+    margin: 14px 0 0;
+  }
+
+  /* ===================== ⑦ 底部 ===================== */
+  .footer {
+    text-align: center;
+    padding: 72px 22px 96px;
+    background: linear-gradient(180deg, var(--cream) 0%, #FFEFE6 100%);
+  }
+
+  .footer-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: #B09289;
+    margin: 0 0 6px;
+  }
+
+  .days-num {
+    font-family: var(--serif);
+    font-size: clamp(46px, 15vw, 78px);
+    line-height: 1.15;
+    color: #E88C7A;
+    letter-spacing: 2px;
+    margin: 0;
+    text-shadow: 0 6px 18px rgba(255, 156, 139, .24);
+  }
+
+  .days-unit {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #AD8C84;
+    margin: 2px 0 0;
+  }
+
+  .footer-words {
+    font-family: var(--serif);
+    font-size: clamp(19px, 5vw, 24px);
+    letter-spacing: 4px;
+    color: #5A4B48;
+    margin: 30px 0 26px;
+  }
+
+  .footer-sign {
+    margin-top: 34px;
+    font-size: 11.5px;
+    letter-spacing: 2px;
+    color: #C3ADA6;
+  }
+
+  /* ===================== 照片放大弹窗 ===================== */
+  #lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(64, 56, 54, .9);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .35s ease, visibility .35s ease;
+    cursor: zoom-out;
+  }
+
+  #lightbox.on { opacity: 1; visibility: visible; }
+
+  #lightboxImg {
+    max-width: 92vw;
+    max-height: 78vh;
+    border-radius: 10px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .45);
+    transform: scale(.94);
+    transition: transform .35s cubic-bezier(.2, .7, .3, 1);
+    background: #FFF8F0;
+  }
+  #lightbox.on #lightboxImg { transform: scale(1); }
+
+  #lightboxCap {
+    margin-top: 16px;
+    max-width: 86vw;
+    text-align: center;
+    font-size: 13.5px;
+    letter-spacing: 1.5px;
+    color: rgba(255, 248, 240, .88);
+  }
+
+  .lightbox-tip {
+    position: absolute;
+    bottom: 22px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 11.5px;
+    letter-spacing: 2px;
+    color: rgba(255, 248, 240, .5);
+  }
+
+  /* ===================== 爱心满屏动画 ===================== */
+  #hearts {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .rain-heart {
+    position: absolute;
+    top: -8vh;
+    line-height: 1;
+    animation: heartFall var(--dur, 4s) linear forwards;
+    will-change: transform, opacity;
+  }
+
+  @keyframes heartFall {
+    0%   { transform: translate3d(0, -8vh, 0) scale(var(--s, 1)) rotate(0deg); opacity: 0; }
+    10%  { opacity: 1; }
+    100% { transform: translate3d(var(--dx, 0px), 110vh, 0) scale(var(--s, 1)) rotate(var(--rot, 20deg)); opacity: 0; }
+  }
+
+  /* ===================== 滚动淡入（Intersection Observer 控制） ===================== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .9s cubic-bezier(.2, .7, .3, 1), transform .9s cubic-bezier(.2, .7, .3, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===================== 生日元素：彩旗 / 气球 / 蛋糕 / 彩带 ===================== */
+
+  /* ---- 舞台顶上的小彩旗 ---- */
+  .garland {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 13px;
+    padding-top: 8px;
+    pointer-events: none;
+  }
+
+  .garland i {
+    display: block;
+    width: 17px;
+    height: 24px;
+    background: var(--peach);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    opacity: .82;
+    transform-origin: top center;
+    animation: flagSway 4.6s ease-in-out infinite;
+  }
+  .garland i:nth-child(4n+1) { background: #FFC7D6; }
+  .garland i:nth-child(4n+2) { background: #FFD9C9; animation-duration: 5.4s; }
+  .garland i:nth-child(4n+3) { background: var(--peach); animation-duration: 4s; }
+  .garland i:nth-child(4n)   { background: #C9E4DE; animation-duration: 6s; }
+
+  @keyframes flagSway {
+    0%, 100% { transform: rotate(-3deg); }
+    50%      { transform: rotate(3deg); }
+  }
+
+  /* ---- 慢慢晃的气球 ---- */
+  .balloons {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .balloon {
+    position: absolute;
+    width: 42px;
+    height: 54px;
+    border-radius: 50% 50% 50% 50% / 46% 46% 54% 54%;
+    background:
+      radial-gradient(circle at 33% 26%, rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 42%),
+      linear-gradient(160deg, #FFC7D6, #FF9C8B);
+    opacity: .5;
+    animation: balloonFloat 13s ease-in-out infinite;
+  }
+  .balloon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(180deg, rgba(190, 150, 140, .55), rgba(190, 150, 140, 0));
+  }
+
+  @keyframes balloonFloat {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-16px) rotate(3deg); }
+  }
+
+  /* ---- 生日蛋糕区 ---- */
+  .bday-sec {
+    background: linear-gradient(180deg, var(--cream) 0%, #FFF1E6 100%);
+    text-align: center;
+  }
+
+  .cake {
+    position: relative;
+    display: block;
+    width: 220px;
+    height: 212px;
+    margin: 10px auto 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    animation: cakeBob 4.6s ease-in-out infinite;
+  }
+  @keyframes cakeBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+  .cake:active { transform: scale(.985); }
+
+  /* 盘子 */
+  .cake .plate {
+    position: absolute;
+    left: 50%;
+    margin-left: -118px;
+    bottom: 0;
+    width: 236px;
+    height: 12px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #FFE7DC, #FFD3C2);
+    box-shadow: 0 12px 22px rgba(255, 150, 130, .2);
+  }
+
+  /* 三层蛋糕 */
+  .cake .layer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 12px 12px 8px 8px;
+  }
+  .cake .l1 { bottom: 12px;  width: 200px; height: 66px; background: linear-gradient(180deg, #FFEFE0, #FFE0CC 60%, #FFD3BC); }
+  .cake .l2 { bottom: 78px;  width: 160px; height: 54px; background: linear-gradient(180deg, #FFF5EA, #FFE6D5); }
+  .cake .l3 { bottom: 132px; width: 120px; height: 46px; background: linear-gradient(180deg, #FFF9F2, #FFEBDE); }
+
+  /* 每层上面那圈奶油，::after 是花边 */
+  .cake .layer::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 14px;
+    border-radius: 12px 12px 0 0;
+    background: #FFF8F0;
+  }
+  .cake .layer::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 8px 0, #FFF8F0 7px, rgba(255, 248, 240, 0) 8px) repeat-x;
+    background-size: 16px 12px;
+  }
+
+  /* 三根蜡烛 */
+  .cake .candle {
+    position: absolute;
+    bottom: 178px;
+    width: 7px;
+    height: 30px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(45deg, #FFC2D1 0 4px, #FFF8F0 4px 8px);
+  }
+  .cake .candle.c1 { left: 88px; }
+  .cake .candle.c2 { left: 107px; }
+  .cake .candle.c3 { left: 126px; }
+
+  /* 火苗 */
+  .cake .flame {
+    position: absolute;
+    left: 50%;
+    margin-left: -6px;
+    bottom: 100%;
+    width: 12px;
+    height: 18px;
+    border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+    background: radial-gradient(circle at 50% 72%, #FFF6C9 0%, #FFC46B 55%, #FF9B54 100%);
+    box-shadow: 0 0 14px rgba(255, 183, 90, .9), 0 0 30px rgba(255, 183, 90, .45);
+    transform-origin: bottom center;
+    animation: flicker 1.7s ease-in-out infinite;
+    transition: opacity .45s ease, transform .45s ease;
+  }
+
+  @keyframes flicker {
+    0%, 100% { transform: scale(1) rotate(-2deg); opacity: .95; }
+    35%      { transform: scale(.92, 1.08) rotate(2deg); opacity: 1; }
+    70%      { transform: scale(1.05, .95) rotate(-1deg); opacity: .9; }
+  }
+
+  /* 吹灭之后：火苗消失（再点一次又点起来） */
+  .cake.blown .flame {
+    animation: none;
+    opacity: 0;
+    transform: scale(.25) translateY(-6px);
+  }
+
+  .cake-hint {
+    margin: 22px 0 0;
+    font-size: 13.5px;
+    letter-spacing: 1.2px;
+    color: #AE8C84;
+    min-height: 24px;
+    transition: color .4s ease;
+  }
+
+  .bday-count {
+    margin: 10px 0 0;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #C4A79F;
+  }
+
+  /* ---- 彩带 / 纸屑 ---- */
+  #confetti {
+    position: fixed;
+    inset: 0;
+    z-index: 290;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .confetti-bit {
+    position: absolute;
+    top: -6vh;
+    animation: confettiFall var(--dur, 3.4s) linear forwards;
+    will-change: transform, opacity;
+  }
+
+  @keyframes confettiFall {
+    0%   { transform: translate3d(0, -6vh, 0) rotate(0deg); opacity: 0; }
+    8%   { opacity: .95; }
+    100% { transform: translate3d(var(--dx, 0px), 108vh, 0) rotate(var(--rot, 540deg)); opacity: .1; }
+  }
+
+  /* ---- 右下角音乐开关 ---- */
+  .sound-toggle {
+    position: fixed;
+    right: 16px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    z-index: 150;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 181, 167, .5);
+    background: rgba(255, 248, 240, .88);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #C08579;
+    font-size: 19px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(255, 150, 130, .22);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .6s ease, transform .2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.entered .sound-toggle { opacity: .95; pointer-events: auto; }
+  .sound-toggle:active { transform: scale(.9); }
+
+  /* ===================== 手机端微调 ===================== */
+  @media (max-width: 480px) {
+    .section { padding: 64px 18px; }
+    .card, .letter-card { padding: 26px 20px; }
+    .tl-card { padding: 18px 16px; }
+    .grid { gap: 10px; }
+    .shot figcaption { font-size: 10.5px; }
+    .hero { padding: 80px 20px 90px; }
+  }
+
+  /* 电脑端时间轴稍微宽松一点 */
+  @media (min-width: 760px) {
+    .timeline { padding-left: 44px; }
+    .timeline::before { left: 13px; }
+    .tl-dot { left: -44px; width: 26px; height: 26px; }
+    .tl-item { margin-bottom: 52px; }
+  }
+
+  /* 尊重系统的"减少动态效果"设置 */
+  @media (prefers-reduced-motion: reduce) {
+    .petal { animation: none; opacity: .35; }
+    .scroll-hint, .cover-heart, #coverBtn { animation: none; }
+    .garland i, .balloon, .cake, .cake .flame { animation: none; }
+    .confetti-bit { animation-duration: 0.01s; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+
+<body class="locked">
+
+<!-- ============================================================
+     ① 封面页：点「点击查收」才进入主页
+     ============================================================ -->
+<div id="cover">
+  <div class="cover-inner">
+    <div class="cover-heart">♡</div>
+    <!-- 【改文字】封面大字 -->
+    <h1 class="cover-title">小宝，有一份礼物请查收</h1>
+    <!-- 【改文字】封面小字（想删就整行删掉） -->
+    <p class="cover-sub">HAPPY&nbsp;BIRTHDAY&nbsp;·&nbsp;王涵韵</p>
+
+    <button class="btn" id="coverBtn">点击查收 🎁</button>
+
+    <p class="cover-tip">（只写给你一个人）</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     主页
+     ============================================================ -->
+<main id="main">
+
+  <!-- ============ ② 主页开场：彩旗气球 + 飘落花瓣 + 生日大字 ============ -->
+  <section class="hero">
+
+    <!-- 顶上的小彩旗（想加长就多复制几个 <i>） -->
+    <div class="garland" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+
+    <!-- 慢慢晃的气球：--top 是高度位置，--left 是左右位置，改数字就能挪 -->
+    <div class="balloons" aria-hidden="true">
+      <span class="balloon" style="left:7%;  top:26%; animation-delay:-2s"></span>
+      <span class="balloon" style="left:84%; top:18%; animation-delay:-6s; width:34px; height:44px"></span>
+      <span class="balloon" style="left:72%; top:64%; animation-delay:-9s; width:28px; height:36px; opacity:.38"></span>
+    </div>
+
+    <!-- 飘落的花瓣和爱心：纯 CSS 动画，一共 14 个，不密集。
+         想增减就往里复制/删除 <i> 标签；--x 是起始横向位置，--dur 是飘多久，--delay 是延迟 -->
+    <div class="petals" aria-hidden="true">
+      <i class="petal"       style="--x:6%;  --dur:17s; --delay:0s;   --drift:70px;  --spin:300deg; --size:12px"></i>
+      <i class="petal glyph" style="--x:16%; --dur:21s; --delay:-4s;  --drift:-50px; --spin:-260deg; --size:15px">♥</i>
+      <i class="petal"       style="--x:27%; --dur:15s; --delay:-9s;  --drift:90px;  --spin:380deg; --size:9px"></i>
+      <i class="petal glyph" style="--x:38%; --dur:24s; --delay:-2s;  --drift:-70px; --spin:220deg; --size:12px">♥</i>
+      <i class="petal"       style="--x:49%; --dur:19s; --delay:-13s; --drift:60px;  --spin:-320deg; --size:13px"></i>
+      <i class="petal glyph" style="--x:58%; --dur:22s; --delay:-7s;  --drift:50px;  --spin:300deg; --size:11px">♡</i>
+      <i class="petal"       style="--x:67%; --dur:16s; --delay:-11s; --drift:-80px; --spin:340deg; --size:10px"></i>
+      <i class="petal glyph" style="--x:76%; --dur:25s; --delay:-5s;  --drift:80px;  --spin:-240deg; --size:14px">♥</i>
+      <i class="petal"       style="--x:85%; --dur:18s; --delay:-16s; --drift:-60px; --spin:260deg; --size:12px"></i>
+      <i class="petal"       style="--x:92%; --dur:23s; --delay:-3s;  --drift:70px;  --spin:-360deg; --size:9px"></i>
+      <i class="petal"       style="--x:33%; --dur:20s; --delay:-18s; --drift:100px; --spin:300deg; --size:8px"></i>
+      <i class="petal glyph" style="--x:71%; --dur:20s; --delay:-14s; --drift:-90px; --spin:200deg; --size:10px">♡</i>
+      <i class="petal"       style="--x:3%;  --dur:26s; --delay:-10s; --drift:60px;  --spin:-300deg; --size:11px"></i>
+      <i class="petal glyph" style="--x:44%; --dur:18s; --delay:-20s; --drift:40px;  --spin:320deg; --size:13px">♥</i>
+    </div>
+
+    <div class="hero-inner">
+      <!-- 【改文字】顶部小字（生日 + 日期） -->
+      <p class="hero-eyebrow">Happy Birthday · 11.10</p>
+
+      <!-- 【改文字】开场大字：生日祝福 -->
+      <h1 class="hero-title">生日快乐，小宝。</h1>
+
+      <div class="hero-line"></div>
+
+      <!-- 【改文字】开场下面那行小字 -->
+      <p class="hero-note">早上醒来第一眼是你，晚上最后一条消息也是你。</p>
+    </div>
+
+    <div class="scroll-hint">往下滑 ↓</div>
+  </section>
+
+  <!-- ============ ②.5 生日蛋糕：点一下吹蜡烛 ============ -->
+  <section class="section bday-sec" id="birthday">
+    <div class="wrap">
+      <!-- 【改文字】生日区标题 -->
+      <h2 class="sec-title">生日快乐，王涵韵</h2>
+      <p class="sec-sub">11.10 · 今天你最大</p>
+
+      <!-- 蛋糕本体：点一下吹灭蜡烛，再点一下重新点燃 -->
+      <button class="cake" id="cakeBtn" aria-label="点一下吹蜡烛">
+        <span class="plate"></span>
+        <span class="layer l1"></span>
+        <span class="layer l2"></span>
+        <span class="layer l3"></span>
+        <span class="candle c1"><i class="flame"></i></span>
+        <span class="candle c2"><i class="flame"></i></span>
+        <span class="candle c3"><i class="flame"></i></span>
+      </button>
+
+      <!-- 【改文字】蛋糕下面那行字（点完蜡烛会自动换一句） -->
+      <p class="cake-hint" id="cakeHint">轻轻点一下蛋糕，帮我吹蜡烛 🎂</p>
+      <!-- 这行根据今天的日期自动算，不用改 -->
+      <p class="bday-count" id="bdayCount"></p>
+    </div>
+  </section>
+
+  <!-- ============ ③ 告白文案区（手写字体） ============ -->
+  <section class="section" style="background: var(--cream);">
+    <div class="wrap">
+      <div class="letter-card reveal">
+        <div class="letter">
+          <!-- 【改文字】下面每一段都能改；第 5 段的数字会自动算，不用手动改 -->
+          <p>小宝，这是我第一次用代码写情书。</p>
+          <p>以前总觉得"永远"这个词太大了，大到不敢说出口。</p>
+          <p>但跟你在一起的每一天，我都在想——如果以后每一个今天都能像现在这样，</p>
+          <p>早上醒来第一眼看到你，晚上睡前最后一条消息是你发的，</p>
+          <p>那"永远"好像也没那么远了。</p>
+          <p><span class="em" id="letterDays">518</span>天了。谢谢你愿意陪一个有时候笨手笨脚的人，走这么远。</p>
+          <p>生日快乐。以后的每一个生日，我都想在。</p>
+        </div>
+        <div class="letter-sign">—— 你的笨蛋</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ④ 恋爱时间轴 ============ -->
+  <section class="section" style="background: linear-gradient(180deg, var(--cream), #FFF3EA);">
+    <div class="wrap">
+      <h2 class="sec-title">我们走过的地方</h2>
+      <p class="sec-sub">OUR LITTLE TIMELINE</p>
+
+      <div class="timeline">
+
+        <!-- ---------- 节点 ① ---------- -->
+        <div class="tl-item reveal">
+          <span class="tl-dot"></span>
+          <div class="tl-card">
+            <span class="tl-date">2024 · 春天</span>
+            <!-- 【改文字】节点标题 -->
+            <h3 class="tl-title">我们认识了</h3>
+            <!-- 【改文字】节点那行短文字 -->
+            <p class="tl-text">一次很普通的相遇，谁也没想到后来会走到今天。</p>
+
+            <!-- 【换照片】时间轴照片 1：把 images/t1.jpg 换成你自己的照片即可 -->
+            <div class="ph">
+              <span class="ph-hint">照片占位 · images/t1.jpg</span>
+              <img src="images/t1.jpg" alt="我们认识的那一年" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- 节点 ② ---------- -->
+        <div class="tl-item reveal">
+          <span class="tl-dot"></span>
+          <div class="tl-card">
+            <span class="tl-date">2025.06.11</span>
+            <h3 class="tl-title">正式在一起</h3>
+            <p class="tl-text">从这天起，我的日历里多了一个必须记住的日子。</p>
+
+            <!-- 【换照片】时间轴照片 2 -->
+            <div class="ph">
+              <span class="ph-hint">照片占位 · images/t2.jpg</span>
+              <img src="images/t2.jpg" alt="在一起的那天" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- 节点 ③ ---------- -->
+        <div class="tl-item reveal">
+          <span class="tl-dot"></span>
+          <div class="tl-card">
+            <span class="tl-date">第一次旅行</span>
+            <h3 class="tl-title">我们第一次一起去旅行</h3>
+            <p class="tl-text">路上吵吵闹闹，现在想起来只记得开心。</p>
+
+            <!-- 【换照片】时间轴照片 3 -->
+            <div class="ph">
+              <span class="ph-hint">照片占位 · images/t3.jpg</span>
+              <img src="images/t3.jpg" alt="第一次一起旅行" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ---------- 节点 ④ ---------- -->
+        <div class="tl-item reveal">
+          <span class="tl-dot"></span>
+          <div class="tl-card">
+            <span class="tl-date">日常</span>
+            <h3 class="tl-title">无数个日常瞬间</h3>
+            <p class="tl-text">吃饭、散步、随便聊天，这些我都想留着。</p>
+
+            <!-- 【换照片】时间轴照片 4 -->
+            <div class="ph">
+              <span class="ph-hint">照片占位 · images/t4.jpg</span>
+              <img src="images/t4.jpg" alt="我们的日常" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 想加节点？把上面任意一个 tl-item 整段复制一份，改文字和图片路径就行 -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ⑤ 照片墙 ============ -->
+  <section class="section" style="background: #FFF3EA;">
+    <div class="wrap">
+      <h2 class="sec-title">一起的瞬间</h2>
+      <p class="sec-sub">点一下可以看大图</p>
+
+      <!-- 【换照片】把 images/1.jpg ~ images/9.jpg 换成你的照片（9 张最满，也可以只放 6 张，删掉多余的两个 figure 即可）
+           每张图下面的 <figcaption> 和 data-cap 都是配文，改一处记得两处一起改（弹窗用的是 data-cap） -->
+      <div class="grid">
+
+        <figure class="shot reveal" data-cap="第一张合照 · 那天你笑得最好看">
+          <div class="ph">
+            <span class="ph-hint">images/1.jpg</span>
+            <img src="images/1.jpg" alt="照片 1" loading="lazy" />
+          </div>
+          <figcaption>第一张合照 · 那天你笑得最好看</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="一起吃的那顿饭">
+          <div class="ph">
+            <span class="ph-hint">images/2.jpg</span>
+            <img src="images/2.jpg" alt="照片 2" loading="lazy" />
+          </div>
+          <figcaption>一起吃的那顿饭</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="偷偷拍的你">
+          <div class="ph">
+            <span class="ph-hint">images/3.jpg</span>
+            <img src="images/3.jpg" alt="照片 3" loading="lazy" />
+          </div>
+          <figcaption>偷偷拍的你</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="一起走过的路">
+          <div class="ph">
+            <span class="ph-hint">images/4.jpg</span>
+            <img src="images/4.jpg" alt="照片 4" loading="lazy" />
+          </div>
+          <figcaption>一起走过的路</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="你笑起来的样子">
+          <div class="ph">
+            <span class="ph-hint">images/5.jpg</span>
+            <img src="images/5.jpg" alt="照片 5" loading="lazy" />
+          </div>
+          <figcaption>你笑起来的样子</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="第一次一起旅行">
+          <div class="ph">
+            <span class="ph-hint">images/6.jpg</span>
+            <img src="images/6.jpg" alt="照片 6" loading="lazy" />
+          </div>
+          <figcaption>第一次一起旅行</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="那天天气很好">
+          <div class="ph">
+            <span class="ph-hint">images/7.jpg</span>
+            <img src="images/7.jpg" alt="照片 7" loading="lazy" />
+          </div>
+          <figcaption>那天天气很好</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="普普通通的一天，也很喜欢">
+          <div class="ph">
+            <span class="ph-hint">images/8.jpg</span>
+            <img src="images/8.jpg" alt="照片 8" loading="lazy" />
+          </div>
+          <figcaption>普普通通的一天，也很喜欢</figcaption>
+        </figure>
+
+        <figure class="shot reveal" data-cap="以后还要拍好多好多张">
+          <div class="ph">
+            <span class="ph-hint">images/9.jpg</span>
+            <img src="images/9.jpg" alt="照片 9" loading="lazy" />
+          </div>
+          <figcaption>以后还要拍好多好多张</figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ⑥ 视频区 ============ -->
+  <section class="section" style="background: linear-gradient(180deg, #FFF3EA, var(--cream));">
+    <div class="wrap">
+      <h2 class="sec-title">还有一段小视频</h2>
+      <p class="sec-sub">录给你的</p>
+
+      <div class="video-card reveal">
+        <!--
+          【换视频】
+            src   → 你的视频：videos/1.mp4
+            poster→ 视频没点播放前显示的那张图：images/poster.jpg（换成你喜欢的画面）
+        -->
+        <video
+          src="videos/1.mp4"
+          poster="images/poster.jpg"
+          controls
+          playsinline
+          webkit-playsinline
+          preload="metadata">
+          你的浏览器不支持视频播放，换一个浏览器试试吧。
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ⑦ 底部 ============ -->
+  <footer class="footer">
+    <p class="footer-label">我们已经在一起</p>
+    <!-- 天数由 JS 自动计算（从 2025-06-11 到今天），不用手动改 -->
+    <p class="days-num" id="daysNum">0</p>
+    <p class="days-unit">天</p>
+
+    <p class="footer-words">以后也一起 🤍</p>
+
+    <!-- 点这个按钮 → 爱心满屏飘落 -->
+    <button class="btn" id="heartBtn">再陪你过下一个生日</button>
+
+    <p class="footer-sign">Made with ❤ &amp; 一堆想说的话</p>
+  </footer>
+
+</main>
+
+<!-- ============================================================
+     照片放大弹窗（点击图片打开，点任意位置 / 按 Esc 关闭）
+     ============================================================ -->
+<div id="lightbox" aria-hidden="true">
+  <img id="lightboxImg" alt="放大的照片" />
+  <p id="lightboxCap"></p>
+  <p class="lightbox-tip">点一下关闭</p>
+</div>
+
+<!-- 爱心满屏动画的容器，爱心由 JS 动态创建 -->
+<div id="hearts" aria-hidden="true"></div>
+
+<!-- 彩带 / 纸屑的容器，纸屑由 JS 动态创建 -->
+<div id="confetti" aria-hidden="true"></div>
+
+<!-- 右下角音乐开关（进入主页后才出现） -->
+<button class="sound-toggle" id="soundToggle" aria-label="开关音乐">🎵</button>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==========================================================
+     1. 自动计算「在一起多少天」
+     ----------------------------------------------------------
+     在一起的日子：2025 年 6 月 11 日
+     注意：JS 里月份从 0 开始数，所以 6 月要写成 5
+     ========================================================== */
+  var START = new Date(2025, 5, 11);   // ← 如果日期变了，只改这一行
+
+  function daysTogether() {
+    var now = new Date();
+    // 只按「日期」算，避免今天几点几分影响结果
+    var a = Date.UTC(START.getFullYear(), START.getMonth(), START.getDate());
+    var b = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    // +1 表示「在一起的第 1 天」从 6 月 11 日当天开始算；
+    // 如果你习惯满 24 小时才算一天，把最后的 +1 去掉就好
+    return Math.floor((b - a) / 86400000) + 1;
+  }
+
+  var total = daysTogether();
+  var daysNumEl = document.getElementById("daysNum");
+  var letterDaysEl = document.getElementById("letterDays");
+
+  if (daysNumEl) {
+    // 数字从 0 慢慢滚到她该看到的数字，像翻日历
+    var start = null;
+    var DURATION = 1400;
+    var target = Math.max(total, 0);
+
+    function tick(ts) {
+      if (start === null) start = ts;
+      var p = Math.min((ts - start) / DURATION, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      daysNumEl.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+
+    // 底部天数出现时再滚数字
+    if ("IntersectionObserver" in window) {
+      var dayIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            requestAnimationFrame(tick);
+            dayIO.disconnect();
+          }
+        });
+      }, { threshold: 0.35 });
+      dayIO.observe(daysNumEl);
+    } else {
+      daysNumEl.textContent = target;
+    }
+  }
+
+  // 告白文案里那句「XXX 天了」也跟着自动算
+  if (letterDaysEl) letterDaysEl.textContent = total;
+
+  /* ==========================================================
+     2. 封面：点击「点击查收」进入主页
+     ========================================================== */
+  var cover = document.getElementById("cover");
+  var coverBtn = document.getElementById("coverBtn");
+  var mainEl = document.getElementById("main");
+
+  function enterSite() {
+    if (cover.classList.contains("hide")) return;
+    cover.classList.add("hide");
+    mainEl.classList.add("entered");
+    document.body.classList.add("entered");     // 右下角音乐按钮出现在这里
+    document.body.classList.remove("locked");   // 解锁滚动
+    window.scrollTo(0, 0);
+
+    // 点按钮本身就是一个"用户手势"，所以这里开始放歌不会被浏览器拦
+    SFX.startMusic();
+    SFX.chime();
+    window.setTimeout(function () { confettiBurst(48); }, 300);
+  }
+
+  coverBtn.addEventListener("click", enterSite);
+  // 点封面任何地方也能进（手机上更好按）
+  cover.addEventListener("click", function (e) {
+    if (e.target === cover || e.target.classList.contains("cover-inner")) enterSite();
+  });
+  // 键盘回车 / 空格也能进
+  window.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ") && !cover.classList.contains("hide")) {
+      enterSite();
+    }
+  });
+
+  /* ==========================================================
+     3. 图片加载失败时，优雅地露出占位提示（不会出现破图标）
+     ========================================================== */
+  function guardImage(img) {
+    function hide() {
+      img.style.display = "none";
+      img.setAttribute("data-broken", "1");
+    }
+    img.addEventListener("error", hide);
+    // 脚本执行前可能已经加载失败了，补一次判断
+    if (img.complete && img.naturalWidth === 0) hide();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".ph img"), guardImage);
+
+  /* ==========================================================
+     4. 照片放大弹窗
+     ========================================================== */
+  var lightbox = document.getElementById("lightbox");
+  var lightboxImg = document.getElementById("lightboxImg");
+  var lightboxCap = document.getElementById("lightboxCap");
+
+  function openLightbox(src, caption) {
+    lightboxImg.src = src;
+    lightboxCap.textContent = caption || "";
+    lightbox.classList.add("on");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.classList.add("locked");
+    SFX.pop();
+  }
+
+  function closeLightbox() {
+    if (!lightbox.classList.contains("on")) return;
+    lightbox.classList.remove("on");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("locked");
+    // 等淡出动画结束再清掉图片，避免闪一下
+    window.setTimeout(function () {
+      if (!lightbox.classList.contains("on")) lightboxImg.removeAttribute("src");
+    }, 380);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".shot"), function (fig) {
+    fig.addEventListener("click", function () {
+      var img = fig.querySelector("img");
+      if (!img) return;
+      if (img.getAttribute("data-broken") === "1") return;  // 还没放照片就先不弹
+      var cap = fig.getAttribute("data-cap") ||
+                (fig.querySelector("figcaption") ? fig.querySelector("figcaption").textContent : "");
+      openLightbox(img.getAttribute("src"), cap);
+    });
+  });
+
+  lightbox.addEventListener("click", closeLightbox);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  /* ==========================================================
+     5. 滚动淡入：从下往上滚进来的动画
+     用 IntersectionObserver 监听 .reveal 元素
+     ========================================================== */
+  var revealEls = document.querySelectorAll(".reveal");
+
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);   // 出现一次就够，之后不再重复
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+
+    Array.prototype.forEach.call(revealEls, function (el, i) {
+      // 同一组里稍微错开一点，看起来像依次浮上来
+      el.style.transitionDelay = (i % 3) * 0.08 + "s";
+      io.observe(el);
+    });
+  } else {
+    // 老浏览器兜底：直接显示
+    Array.prototype.forEach.call(revealEls, function (el) { el.classList.add("in"); });
+  }
+
+  /* ==========================================================
+     6. 「再陪你过下一个生日」→ 爱心满屏动画
+     用 JS 动态创建 div（这里是 span），掉落完自动删掉，不占内存
+     ========================================================== */
+  var heartBtn = document.getElementById("heartBtn");
+  var heartLayer = document.getElementById("hearts");
+  var SYMBOLS = ["❤", "💗", "🤍", "💖", "💞", "♡"];
+
+  function heartRain(count) {
+    for (var i = 0; i < count; i++) {
+      var h = document.createElement("span");
+      h.className = "rain-heart";
+      h.textContent = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+
+      var dur = 2.8 + Math.random() * 2.8;          // 掉落时长 2.8s ~ 5.6s
+      h.style.left = (Math.random() * 100).toFixed(2) + "vw";
+      h.style.fontSize = (14 + Math.random() * 24).toFixed(0) + "px";
+      h.style.animationDelay = (Math.random() * 0.7).toFixed(2) + "s";
+      h.style.setProperty("--dur", dur.toFixed(2) + "s");
+      h.style.setProperty("--dx", (Math.random() * 140 - 70).toFixed(0) + "px");
+      h.style.setProperty("--rot", (Math.random() * 180 - 90).toFixed(0) + "deg");
+      h.style.setProperty("--s", (0.75 + Math.random() * 0.7).toFixed(2));
+
+      heartLayer.appendChild(h);
+
+      // 动画播完就删掉，之后点多少次都不会卡
+      (function (node, ms) {
+        window.setTimeout(function () {
+          if (node.parentNode) node.parentNode.removeChild(node);
+        }, ms);
+      })(h, (dur + 1.2) * 1000);
+    }
+  }
+
+  var rainCooling = false;
+  heartBtn.addEventListener("click", function () {
+    if (rainCooling) return;      // 防止连点造成卡顿
+    rainCooling = true;
+    heartRain(70);
+    SFX.sparkle();
+    window.setTimeout(function () { rainCooling = false; }, 900);
+  });
+
+  /* ==========================================================
+     7. 视频加载失败时给一句温柔提示
+        （正常情况下视频下面什么都不显示，只在真读不到视频时才临时加一行字）
+     ========================================================== */
+  var videoEl = document.querySelector(".video-card video");
+  if (videoEl) {
+    videoEl.addEventListener("error", function () {
+      var card = document.querySelector(".video-card");
+      if (!card || card.querySelector(".video-note")) return;
+      var note = document.createElement("p");
+      note.className = "video-note";
+      note.textContent = "视频还没放进来：把 1.mp4 放进 videos 文件夹就可以看了。";
+      card.appendChild(note);
+    });
+  }
+
+  /* ==========================================================
+     8. 彩带 / 纸屑（JS 动态创建，掉完自动删）
+     ========================================================== */
+  var CONFETTI_COLORS = ["#FFB5A7", "#FFC7D6", "#FFD9C9", "#FFE9A8", "#C9E4DE", "#FFB0C0", "#FFECD9"];
+
+  function confettiBurst(count) {
+    var layer = document.getElementById("confetti");
+    if (!layer) return;
+    for (var i = 0; i < count; i++) {
+      var el = document.createElement("i");
+      el.className = "confetti-bit";
+      var dur = 2.8 + Math.random() * 2.4;
+      el.style.left = (Math.random() * 100).toFixed(1) + "vw";
+      el.style.width = (4 + Math.random() * 6).toFixed(1) + "px";
+      el.style.height = (7 + Math.random() * 9).toFixed(1) + "px";
+      el.style.background = CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0];
+      el.style.borderRadius = Math.random() < 0.45 ? "50%" : "2px";
+      el.style.setProperty("--dur", dur.toFixed(2) + "s");
+      el.style.setProperty("--dx", (Math.random() * 160 - 80).toFixed(0) + "px");
+      el.style.setProperty("--rot", (Math.random() * 1080 - 540).toFixed(0) + "deg");
+      el.style.animationDelay = (Math.random() * 0.6).toFixed(2) + "s";
+      layer.appendChild(el);
+
+      (function (node, ms) {
+        window.setTimeout(function () {
+          if (node.parentNode) node.parentNode.removeChild(node);
+        }, ms);
+      })(el, (dur + 1.4) * 1000);
+    }
+  }
+
+  /* ==========================================================
+     9. 音乐 & 音效
+        全部用 Web Audio 现场合成，不需要任何音频文件，离线也能响。
+        · 进入主页时开始放《生日快乐》八音盒版（循环）
+        · 点查收 / 翻照片 / 吹蜡烛 / 爱心满屏 都有小音效
+        · 右下角 🎵 按钮随时静音
+        想换歌：改下面的 SONG 数组（音名 + 拍数）就行
+     ========================================================== */
+  var SFX = (function () {
+    var actx = null, master = null, musicBus = null, noiseBuf = null;
+    var musicTimer = null, enabled = true, playing = false;
+
+    var F = {
+      C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23,
+      G4: 392.00, A4: 440.00, B4: 493.88,
+      C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99
+    };
+
+    // 《生日快乐》：音名 + 拍数（3/4 拍，速度 76）
+    var SONG = [
+      ["G4", 0.75], ["G4", 0.25], ["A4", 1], ["G4", 1], ["C5", 1], ["B4", 2],
+      ["G4", 0.75], ["G4", 0.25], ["A4", 1], ["G4", 1], ["D5", 1], ["C5", 2],
+      ["G4", 0.75], ["G4", 0.25], ["G5", 1], ["E5", 1], ["C5", 1], ["D5", 1], ["C5", 2],
+      ["F5", 0.75], ["F5", 0.25], ["E5", 1], ["C5", 1], ["D5", 1], ["C5", 3]
+    ];
+    var BEAT = 60 / 76;
+
+    function ensure() {
+      if (actx) {
+        if (actx.state === "suspended") actx.resume();
+        return actx;
+      }
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { actx = new AC(); } catch (e) { return null; }
+      master = actx.createGain();
+      master.gain.value = 0.7;
+      master.connect(actx.destination);
+      musicBus = actx.createGain();
+      musicBus.gain.value = enabled ? 0.3 : 0.0001;
+      musicBus.connect(master);
+      return actx;
+    }
+
+    // 一颗八音盒音符：正弦 + 一点点高八度泛音，快速衰减
+    function bell(freq, when, dur, vol, dest) {
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, when);
+      g.gain.linearRampToValueAtTime(vol, when + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+      g.connect(dest || master);
+
+      var o1 = actx.createOscillator();
+      o1.type = "sine";
+      o1.frequency.value = freq;
+      o1.connect(g);
+
+      var o2 = actx.createOscillator();
+      o2.type = "triangle";
+      o2.frequency.value = freq * 2.01;
+      var g2 = actx.createGain();
+      g2.gain.value = 0.15;
+      o2.connect(g2);
+      g2.connect(g);
+
+      o1.start(when); o2.start(when);
+      o1.stop(when + dur + 0.05); o2.stop(when + dur + 0.05);
+    }
+
+    function noiseSource() {
+      if (!noiseBuf) {
+        var len = Math.floor(actx.sampleRate * 0.6);
+        noiseBuf = actx.createBuffer(1, len, actx.sampleRate);
+        var d = noiseBuf.getChannelData(0);
+        for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      }
+      var src = actx.createBufferSource();
+      src.buffer = noiseBuf;
+      return src;
+    }
+
+    function scheduleSong() {
+      if (!actx || !playing) return;
+      var t = actx.currentTime + 0.25;
+      for (var i = 0; i < SONG.length; i++) {
+        bell(F[SONG[i][0]], t, 1.7, 0.5, musicBus);
+        t += SONG[i][1] * BEAT;
+      }
+      var wait = (t - actx.currentTime + 2.4) * 1000;   // 唱完歇两秒半再从头
+      musicTimer = window.setTimeout(scheduleSong, wait);
+    }
+
+    function startMusic() {
+      if (!ensure()) return false;
+      enabled = true;
+      if (musicBus) {
+        musicBus.gain.cancelScheduledValues(actx.currentTime);
+        musicBus.gain.setValueAtTime(Math.max(musicBus.gain.value, 0.0001), actx.currentTime);
+        musicBus.gain.linearRampToValueAtTime(0.3, actx.currentTime + 1.2);
+      }
+      if (!playing) { playing = true; scheduleSong(); }
+      return true;
+    }
+
+    function stopMusic() {
+      enabled = false;
+      playing = false;
+      if (musicTimer) { window.clearTimeout(musicTimer); musicTimer = null; }
+      if (actx && musicBus) {
+        musicBus.gain.cancelScheduledValues(actx.currentTime);
+        musicBus.gain.setValueAtTime(musicBus.gain.value, actx.currentTime);
+        musicBus.gain.linearRampToValueAtTime(0.0001, actx.currentTime + 0.6);
+      }
+      return false;
+    }
+
+    function chime() {
+      if (!ensure()) return;
+      var t = actx.currentTime + 0.02;
+      bell(1046.5, t, 1.3, 0.26);
+      bell(1318.5, t + 0.09, 1.3, 0.2);
+      bell(1568.0, t + 0.18, 1.5, 0.16);
+    }
+
+    function pop() {
+      if (!ensure()) return;
+      var t = actx.currentTime + 0.01;
+      var o = actx.createOscillator();
+      o.type = "sine";
+      o.frequency.setValueAtTime(780, t);
+      o.frequency.exponentialRampToValueAtTime(320, t + 0.12);
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.2, t + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+      o.connect(g); g.connect(master);
+      o.start(t); o.stop(t + 0.2);
+    }
+
+    // 吹蜡烛：一段"呼"的气声
+    function blow() {
+      if (!ensure()) return;
+      var t = actx.currentTime + 0.02;
+      var src = noiseSource();
+      var bp = actx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.Q.value = 1.1;
+      bp.frequency.setValueAtTime(1500, t);
+      bp.frequency.exponentialRampToValueAtTime(320, t + 0.5);
+      var g = actx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.linearRampToValueAtTime(0.45, t + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+      src.connect(bp); bp.connect(g); g.connect(master);
+      src.start(t); src.stop(t + 0.6);
+    }
+
+    // 一串叮咚（点爱心按钮时）
+    function sparkle() {
+      if (!ensure()) return;
+      var t = actx.currentTime + 0.02;
+      var notes = [1046.5, 1174.7, 1318.5, 1568.0, 2093.0];
+      for (var i = 0; i < notes.length; i++) bell(notes[i], t + i * 0.06, 1.0, 0.15);
+    }
+
+    return {
+      startMusic: startMusic,
+      stopMusic: stopMusic,
+      chime: chime,
+      pop: pop,
+      blow: blow,
+      sparkle: sparkle,
+      isOn: function () { return enabled; },
+      toggle: function () { return enabled ? stopMusic() : startMusic(); }
+    };
+  })();
+
+  /* ==========================================================
+     10. 生日蛋糕：点一下吹蜡烛（再点一下重新点燃）
+     ========================================================== */
+  var cakeBtn = document.getElementById("cakeBtn");
+  var cakeHint = document.getElementById("cakeHint");
+
+  if (cakeBtn) {
+    var cakeBlown = false;
+    cakeBtn.addEventListener("click", function () {
+      cakeBlown = !cakeBlown;
+      if (cakeBlown) {
+        cakeBtn.classList.add("blown");
+        SFX.blow();
+        window.setTimeout(function () {
+          SFX.chime();
+          confettiBurst(80);
+        }, 420);
+        if (cakeHint) cakeHint.textContent = "蜡烛吹灭啦 —— 愿望一定会实现的，以后每一个生日我都在。";
+      } else {
+        cakeBtn.classList.remove("blown");
+        SFX.chime();
+        if (cakeHint) cakeHint.textContent = "轻轻点一下蛋糕，帮我吹蜡烛 🎂";
+      }
+    });
+  }
+
+  /* ==========================================================
+     11. 距离 11 月 10 日还有几天（自动算，不用改）
+     ========================================================== */
+  (function () {
+    var el = document.getElementById("bdayCount");
+    if (!el) return;
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var d = new Date(now.getFullYear(), 10, 10);        // 11 月 10 日（月份从 0 数）
+    if (today.getTime() > d.getTime()) d = new Date(now.getFullYear() + 1, 10, 10);
+    var diff = Math.round((d - today) / 86400000);
+    el.textContent = diff === 0
+      ? "今天就是 11 月 10 日 · 生日快乐 🎂"
+      : "距离下一个 11 月 10 日，还有 " + diff + " 天";
+  })();
+
+  /* ==========================================================
+     12. 右下角音乐开关
+     ========================================================== */
+  var soundBtn = document.getElementById("soundToggle");
+  if (soundBtn) {
+    soundBtn.addEventListener("click", function () {
+      var on = SFX.toggle();
+      soundBtn.textContent = on ? "🎵" : "🔇";
+      soundBtn.setAttribute("aria-label", on ? "关闭音乐" : "打开音乐");
+    });
+  }
+})();
+</script>
+</body>
+</html>
